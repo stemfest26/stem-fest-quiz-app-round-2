@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Quiz Competition - Round 2</title>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #a78bfa;
+            --accent: #f59e0b;
+            --success: #059669;
+            --error: #e11d48;
+            --bg: #faf5ff;
+            --card: #ffffff;
+            --text: #1e1b4b;
+            --muted: #6b7280;
+            --border: #e9d5ff;
+            --shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #faf5ff 0%, #fdf4ff 40%, #fff7ed 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        #welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(124, 58, 237, 0.25);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #c026d3 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary-light);
+        }
+
+        .btn-secondary:hover {
+            background: #f5f3ff;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Main App Layout */
+        .hidden {
+            display: none !important;
+        }
+
+        header {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-board {
+            display: flex;
+            gap: 20px;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .score-board strong {
+            color: var(--primary);
+        }
+
+        /* Sections Grid */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+        }
+
+        .section-card:hover:not(.disabled) {
+            transform: translateY(-4px);
+            border-color: var(--primary-light);
+            box-shadow: 0 12px 30px -8px rgba(124, 58, 237, 0.3);
+        }
+
+        .section-card.disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            background: #f5f3ff;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .section-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* Question Selection Grid */
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .q-btn {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .q-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .q-btn:disabled,
+        .q-btn.used {
+            background: #ede9fe;
+            color: #a78bfa;
+            border-color: #ddd6fe;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .q-btn.correct {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .q-btn.wrong {
+            background: #ffe4e6;
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* Question Page */
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+            border: 3px solid transparent;
+        }
+
+        .question-card.correct-bg {
+            background: #ecfdf5;
+            border-color: var(--success);
+        }
+
+        .question-card.wrong-bg {
+            background: #fff1f2;
+            border-color: var(--error);
+        }
+
+        .timer-bar-container {
+            height: 8px;
+            background: #ede9fe;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #f97316);
+            width: 100%;
+            transition: width 1s linear;
+            border-radius: 4px;
+        }
+
+        .timer-bar.warning {
+            background: linear-gradient(90deg, #f59e0b, #e11d48);
+        }
+
+        .timer-text {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: #faf5ff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05rem;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary-light);
+            background: #f3e8ff;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #ede9fe;
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .option.wrong {
+            border-color: var(--error);
+            background: #ffe4e6;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background: var(--success);
+        }
+
+        .option.wrong .option-letter {
+            background: var(--error);
+        }
+
+        .feedback {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.15rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .feedback.wrong {
+            background: #ffe4e6;
+            color: var(--error);
+        }
+
+        .actions {
+            margin-top: 28px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .progress-info {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Results */
+        #results-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .welcome-title {
+                font-size: 2.2rem;
+            }
+            .question-card {
+                padding: 20px;
+            }
+            .question-text {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <div class="welcome-title">ICT Quiz Competition</div>
+        <div class="welcome-subtitle">App 2 • 25 Questions • 5 Topics</div>
+        <p style="max-width: 480px; color: var(--muted); margin-bottom: 32px;">
+            Test your knowledge of Programming, Operating Systems, Networking, Computer History and Office Applications.
+            Each question has a 30-second timer. Good luck!
+        </p>
+        <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+        <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resetUsedQuestions()">Reset Used Questions</button>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="hidden">
+        <div class="container">
+            <header>
+                <div class="logo">ICT Quiz • App 2</div>
+                <div class="score-board">
+                    <span>Score: <strong id="score">0</strong></span>
+                    <span>Answered: <strong id="answered">0</strong>/25</span>
+                </div>
+            </header>
+
+            <!-- Sections View -->
+            <div id="sections-view">
+                <div class="section-header">
+                    <h2>Select a Topic</h2>
+                    <p class="progress-info">Choose a section to answer its questions. Used questions are disabled for other players.</p>
+                </div>
+                <div class="sections-grid" id="sections-grid"></div>
+                <div style="text-align: center; margin-top: 24px;">
+                    <button class="btn btn-secondary" onclick="showResults()">View Results</button>
+                </div>
+            </div>
+
+            <!-- Question Selection View -->
+            <div id="questions-view" class="hidden">
+                <button class="back-link" onclick="showSections()">← Back to Topics</button>
+                <div class="section-header">
+                    <h2 id="current-section-title">Topic</h2>
+                    <p class="progress-info" id="section-progress">Select a question</p>
+                </div>
+                <div class="question-grid" id="question-grid"></div>
+            </div>
+
+            <!-- Single Question View -->
+            <div id="question-view" class="hidden">
+                <button class="back-link" onclick="backToQuestions()">← Back to Questions</button>
+                <div class="question-card" id="question-card">
+                    <div class="timer-text" id="timer-text">30</div>
+                    <div class="timer-bar-container">
+                        <div class="timer-bar" id="timer-bar"></div>
+                    </div>
+                    <div class="question-number" id="q-number">Question 1</div>
+                    <div class="question-text" id="q-text">Question text here</div>
+                    <div class="options" id="options"></div>
+                    <div class="feedback" id="feedback"></div>
+                    <div class="actions" id="actions" style="display: none;">
+                        <button class="btn btn-primary" onclick="backToQuestions()">Next Question</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results View -->
+            <div id="results-view" class="hidden">
+                <div id="results-screen">
+                    <h2 style="color: var(--primary);">Quiz Results</h2>
+                    <div class="results-score" id="final-score">0 / 25</div>
+                    <div class="results-message" id="results-message">Great effort!</div>
+                    <button class="btn btn-primary" onclick="showSections()">Back to Topics</button>
+                    <button class="btn btn-secondary" style="margin-left: 12px;" onclick="resetUsedQuestions(); location.reload();">Start Fresh</button>
+                </div>
+            </div>
+        </div>
+        <footer>ICT Quiz Competition • App 2 • Pure HTML / CSS / JS</footer>
+    </div>
+
+    <script>
+        // ========== DATA (Remaining 25 questions) ==========
+        const SECTIONS = [
+            {
+                id: "programming",
+                title: "Programming",
+                icon: "💻",
+                questions: [
+                    {
+                        id: 6,
+                        text: "Which component performs arithmetic and logical operations in a computer?",
+                        options: ["Control Unit", "Arithmetic and Logic Unit (ALU)", "Keyboard", "Monitor"],
+                        answer: 1
+                    },
+                    {
+                        id: 7,
+                        text: "Which of the following best describes a program?",
+                        options: ["A physical computer component", "A collection of instructions for a computer", "A network cable", "A storage device"],
+                        answer: 1
+                    },
+                    {
+                        id: 8,
+                        text: "Which of the following is an example of utility software mentioned in the ICT guide?",
+                        options: ["Virus guard", "Spreadsheet", "Presentation slide", "Word-processing document"],
+                        answer: 0
+                    },
+                    {
+                        id: 9,
+                        text: "What is firmware?",
+                        options: ["A computer program embedded in a hardware device", "A type of computer monitor", "A computer network topology", "A printed document"],
+                        answer: 0
+                    },
+                    {
+                        id: 10,
+                        text: "Which of the following is a major function of a computer system?",
+                        options: ["Input, processing, output and control", "Printing only", "Connecting to the internet only", "Displaying text only"],
+                        answer: 0
+                    }
+                ]
+            },
+            {
+                id: "os",
+                title: "Operating Systems",
+                icon: "🖥️",
+                questions: [
+                    {
+                        id: 16,
+                        text: "Which of the following is an operating-system function related to protection?",
+                        options: ["Security and protection", "Image drawing", "Slide animation", "Document decoration"],
+                        answer: 0
+                    },
+                    {
+                        id: 17,
+                        text: "What is the purpose of a user interface provided by an operating system?",
+                        options: ["To allow users to interact with the computer", "To replace the computer's processor", "To increase the physical size of the computer", "To manufacture storage devices"],
+                        answer: 0
+                    },
+                    {
+                        id: 18,
+                        text: "Which of the following is a classification of operating systems listed in the guides?",
+                        options: ["Real-time operating system", "Mechanical operating system", "Optical operating system", "Printing operating system"],
+                        answer: 0
+                    },
+                    {
+                        id: 19,
+                        text: "What is one purpose of memory management in an operating system?",
+                        options: ["To manage computer memory resources", "To create network cables", "To manufacture processors", "To display presentations only"],
+                        answer: 0
+                    },
+                    {
+                        id: 20,
+                        text: "Which operating-system type shares processor time among multiple programs?",
+                        options: ["Time-sharing system", "Single-task system", "Manual processing system", "Mechanical calculating system"],
+                        answer: 0
+                    }
+                ]
+            },
+            {
+                id: "networking",
+                title: "Networking",
+                icon: "🌐",
+                questions: [
+                    {
+                        id: 26,
+                        text: "What does PSTN stand for in the networking material?",
+                        options: ["Public Switched Telephone Network", "Private System Transfer Node", "Programmed Switching Technology Network", "Public Software Transmission Network"],
+                        answer: 0
+                    },
+                    {
+                        id: 27,
+                        text: "Which device functions as a common connection point for network devices?",
+                        options: ["Hub", "Printer", "Scanner", "Plotter"],
+                        answer: 0
+                    },
+                    {
+                        id: 28,
+                        text: "What is a characteristic of a mesh topology?",
+                        options: ["Hosts are connected through point-to-point connections to other hosts", "All computers must connect to one central printer", "Every computer uses only a single shared keyboard", "Computers cannot communicate with each other"],
+                        answer: 0
+                    },
+                    {
+                        id: 29,
+                        text: "What is the main difficulty associated with a bus topology described in the guide?",
+                        options: ["Controlling access to the shared communication medium", "Connecting each computer to a central switch", "Printing documents", "Storing presentation slides"],
+                        answer: 0
+                    },
+                    {
+                        id: 30,
+                        text: "Which of the following is a networking device or technology discussed in the guides?",
+                        options: ["Switch", "Word processor", "Spreadsheet formula", "Slide transition"],
+                        answer: 0
+                    }
+                ]
+            },
+            {
+                id: "history",
+                title: "Computer History",
+                icon: "📜",
+                questions: [
+                    {
+                        id: 36,
+                        text: "Which computer component was used in first-generation computers, according to the guide?",
+                        options: ["Vacuum tubes", "Touch screens", "Flash memory cards", "Optical mice"],
+                        answer: 0
+                    },
+                    {
+                        id: 37,
+                        text: "During which period does the guide place the first generation of computers?",
+                        options: ["1450–1840", "1840–1940", "1940–1956", "2000–2020"],
+                        answer: 2
+                    },
+                    {
+                        id: 38,
+                        text: "Which computer is identified as the first automatic computer in the historical material?",
+                        options: ["Pascaline", "Stepped Reckoner", "Mark I", "Abacus"],
+                        answer: 2
+                    },
+                    {
+                        id: 39,
+                        text: "Which person developed the concept of Input, Process and Output mentioned in the guide's discussion of the Difference Engine?",
+                        options: ["Charles Babbage", "Blaise Pascal", "Howard Aiken", "Gottfried Wilhelm Leibniz"],
+                        answer: 0
+                    },
+                    {
+                        id: 40,
+                        text: "Which of the following is a classification of computers based on size?",
+                        options: ["Analog", "Digital", "Special-purpose", "Mainframe"],
+                        answer: 3
+                    }
+                ]
+            },
+            {
+                id: "office",
+                title: "Office Applications",
+                icon: "📊",
+                questions: [
+                    {
+                        id: 46,
+                        text: "Which application would be the most appropriate choice for organizing data in rows and columns?",
+                        options: ["Microsoft Word", "Microsoft Excel", "Microsoft PowerPoint", "A modem"],
+                        answer: 1
+                    },
+                    {
+                        id: 47,
+                        text: "Which application would be most suitable for presenting information to an audience using slides?",
+                        options: ["Microsoft Excel", "Microsoft Word", "Microsoft PowerPoint", "A file manager"],
+                        answer: 2
+                    },
+                    {
+                        id: 48,
+                        text: "Which of the following best describes office automation?",
+                        options: ["Using computer systems and applications to improve office productivity", "Replacing every computer with a mechanical calculator", "Using computers only to play games", "Preventing electronic communication in offices"],
+                        answer: 0
+                    },
+                    {
+                        id: 49,
+                        text: "Which of the following is listed as an example of an Office Automation System activity in the guide?",
+                        options: ["Electronic mail", "Processor manufacturing", "Constructing optical discs", "Installing network cables"],
+                        answer: 0
+                    },
+                    {
+                        id: 50,
+                        text: "According to the guide, what is a primary objective of Office Automation Systems?",
+                        options: ["To increase employee productivity in an office", "To eliminate all computer software", "To manufacture hardware components", "To prevent employees from sharing information"],
+                        answer: 0
+                    }
+                ]
+            }
+        ];
+
+        // ========== STATE ==========
+        const STORAGE_KEY = "ict_quiz2_used";
+        let usedQuestions = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        let currentSection = null;
+        let currentQuestion = null;
+        let score = 0;
+        let answeredCount = 0;
+        let timerInterval = null;
+        let timeLeft = 30;
+        let answeredThisQuestion = false;
+
+        // ========== AUDIO ==========
+        function playTone(freq, type, duration) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playSuccess() {
+            playTone(523.25, "sine", 0.15);
+            setTimeout(() => playTone(659.25, "sine", 0.15), 150);
+            setTimeout(() => playTone(783.99, "sine", 0.25), 300);
+        }
+
+        function playError() {
+            playTone(200, "sawtooth", 0.3);
+            setTimeout(() => playTone(150, "sawtooth", 0.4), 200);
+        }
+
+        // ========== NAVIGATION ==========
+        function startQuiz() {
+            document.getElementById("welcome-screen").classList.add("hidden");
+            document.getElementById("app").classList.remove("hidden");
+            renderSections();
+            updateScoreBoard();
+        }
+
+        function showSections() {
+            stopTimer();
+            document.getElementById("sections-view").classList.remove("hidden");
+            document.getElementById("questions-view").classList.add("hidden");
+            document.getElementById("question-view").classList.add("hidden");
+            document.getElementById("results-view").classList.add("hidden");
+            renderSections();
+        }
+
+        function showQuestions(sectionId) {
+            currentSection = SECTIONS.find(s => s.id === sectionId);
+            document.getElementById("sections-view").classList.add("hidden");
+            document.getElementById("questions-view").classList.remove("hidden");
+            document.getElementById("question-view").classList.add("hidden");
+            document.getElementById("current-section-title").textContent = currentSection.icon + " " + currentSection.title;
+            renderQuestionGrid();
+        }
+
+        function showQuestion(qId) {
+            if (usedQuestions[qId]) return;
+            currentQuestion = currentSection.questions.find(q => q.id === qId);
+            answeredThisQuestion = false;
+            document.getElementById("questions-view").classList.add("hidden");
+            document.getElementById("question-view").classList.remove("hidden");
+            renderQuestion();
+            startTimer();
+        }
+
+        function backToQuestions() {
+            stopTimer();
+            document.getElementById("question-view").classList.add("hidden");
+            document.getElementById("questions-view").classList.remove("hidden");
+            renderQuestionGrid();
+            updateScoreBoard();
+        }
+
+        function showResults() {
+            stopTimer();
+            document.getElementById("sections-view").classList.add("hidden");
+            document.getElementById("questions-view").classList.add("hidden");
+            document.getElementById("question-view").classList.add("hidden");
+            document.getElementById("results-view").classList.remove("hidden");
+            document.getElementById("final-score").textContent = score + " / " + answeredCount;
+            let msg = "Keep practicing!";
+            if (answeredCount === 0) msg = "You haven't answered any questions yet.";
+            else if (score / answeredCount >= 0.8) msg = "Excellent work! 🎉";
+            else if (score / answeredCount >= 0.6) msg = "Good job!";
+            else if (score / answeredCount >= 0.4) msg = "Not bad — keep going!";
+            document.getElementById("results-message").textContent = msg;
+        }
+
+        // ========== RENDER ==========
+        function renderSections() {
+            const grid = document.getElementById("sections-grid");
+            grid.innerHTML = "";
+            SECTIONS.forEach(sec => {
+                const usedInSec = sec.questions.filter(q => usedQuestions[q.id]).length;
+                const allUsed = usedInSec === sec.questions.length;
+                const card = document.createElement("div");
+                card.className = "section-card" + (allUsed ? " disabled" : "");
+                card.innerHTML = `
+                    <div class="section-icon">${sec.icon}</div>
+                    <div class="section-title">${sec.title}</div>
+                    <div class="section-meta">${usedInSec}/5 used</div>
+                `;
+                if (!allUsed) {
+                    card.onclick = () => showQuestions(sec.id);
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        function renderQuestionGrid() {
+            const grid = document.getElementById("question-grid");
+            grid.innerHTML = "";
+            let usedCount = 0;
+            currentSection.questions.forEach((q, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "q-btn";
+                btn.textContent = idx + 1;
+                if (usedQuestions[q.id]) {
+                    btn.classList.add("used");
+                    btn.disabled = true;
+                    usedCount++;
+                    if (usedQuestions[q.id] === "correct") btn.classList.add("correct");
+                    if (usedQuestions[q.id] === "wrong") btn.classList.add("wrong");
+                } else {
+                    btn.onclick = () => showQuestion(q.id);
+                }
+                grid.appendChild(btn);
+            });
+            document.getElementById("section-progress").textContent =
+                `${usedCount}/5 questions already used • Click an available number`;
+        }
+
+        function renderQuestion() {
+            const card = document.getElementById("question-card");
+            card.classList.remove("correct-bg", "wrong-bg");
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("actions").style.display = "none";
+
+            document.getElementById("q-number").textContent =
+                `${currentSection.title} • Question ${currentSection.questions.indexOf(currentQuestion) + 1}`;
+            document.getElementById("q-text").textContent = currentQuestion.text;
+
+            const optionsEl = document.getElementById("options");
+            optionsEl.innerHTML = "";
+            const letters = ["A", "B", "C", "D"];
+            currentQuestion.options.forEach((opt, i) => {
+                const div = document.createElement("div");
+                div.className = "option";
+                div.innerHTML = `
+                    <div class="option-letter">${letters[i]}</div>
+                    <div>${opt}</div>
+                `;
+                div.onclick = () => selectAnswer(i, div);
+                optionsEl.appendChild(div);
+            });
+        }
+
+        // ========== TIMER ==========
+        function startTimer() {
+            stopTimer();
+            timeLeft = 30;
+            updateTimerUI();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    if (!answeredThisQuestion) {
+                        handleTimeout();
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimerUI() {
+            document.getElementById("timer-text").textContent = timeLeft;
+            const bar = document.getElementById("timer-bar");
+            bar.style.width = (timeLeft / 30 * 100) + "%";
+            if (timeLeft <= 10) bar.classList.add("warning");
+            else bar.classList.remove("warning");
+        }
+
+        function handleTimeout() {
+            answeredThisQuestion = true;
+            markUsed(currentQuestion.id, "wrong");
+            answeredCount++;
+            const options = document.querySelectorAll(".option");
+            options.forEach((opt, i) => {
+                opt.classList.add("disabled");
+                if (i === currentQuestion.answer) opt.classList.add("correct");
+            });
+            const feedback = document.getElementById("feedback");
+            feedback.textContent = "⏰ Time's up! The correct answer is highlighted.";
+            feedback.className = "feedback show wrong";
+            document.getElementById("question-card").classList.add("wrong-bg");
+            document.getElementById("actions").style.display = "flex";
+            playError();
+            updateScoreBoard();
+        }
+
+        // ========== ANSWER ==========
+        function selectAnswer(index, el) {
+            if (answeredThisQuestion) return;
+            answeredThisQuestion = true;
+            stopTimer();
+
+            const options = document.querySelectorAll(".option");
+            options.forEach(o => o.classList.add("disabled"));
+
+            const isCorrect = index === currentQuestion.answer;
+            if (isCorrect) {
+                el.classList.add("correct");
+                document.getElementById("question-card").classList.add("correct-bg");
+                const feedback = document.getElementById("feedback");
+                feedback.textContent = "✅ Correct! Well done.";
+                feedback.className = "feedback show correct";
+                score++;
+                markUsed(currentQuestion.id, "correct");
+                playSuccess();
+            } else {
+                el.classList.add("wrong");
+                options[currentQuestion.answer].classList.add("correct");
+                document.getElementById("question-card").classList.add("wrong-bg");
+                const feedback = document.getElementById("feedback");
+                feedback.textContent = "❌ Incorrect. The correct answer is highlighted.";
+                feedback.className = "feedback show wrong";
+                markUsed(currentQuestion.id, "wrong");
+                playError();
+            }
+            answeredCount++;
+            document.getElementById("actions").style.display = "flex";
+            updateScoreBoard();
+        }
+
+        function markUsed(id, result) {
+            usedQuestions[id] = result;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(usedQuestions));
+        }
+
+        function updateScoreBoard() {
+            document.getElementById("score").textContent = score;
+            document.getElementById("answered").textContent = answeredCount;
+        }
+
+        function resetUsedQuestions() {
+            if (confirm("Reset all used questions so they can be selected again?")) {
+                usedQuestions = {};
+                localStorage.removeItem(STORAGE_KEY);
+                score = 0;
+                answeredCount = 0;
+                updateScoreBoard();
+                if (!document.getElementById("app").classList.contains("hidden")) {
+                    showSections();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
