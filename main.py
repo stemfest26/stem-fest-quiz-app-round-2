@@ -19,7 +19,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import quote, urlsplit, urlunsplit
 
-QUIZE_APP_2 = "main.html"
+QUIZE_APP_2 = "index.html"
 
 HOST = "0.0.0.0"
 PORT = 8001
